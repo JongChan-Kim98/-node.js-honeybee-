@@ -1,0 +1,97 @@
+body{
+    background-color:#ffbb2e;
+    margin: 0px;
+    color: #262626;
+    box-sizing: border-box;
+}
+
+/* a: 비밀번호잊으셨나요쓸려고씀 */
+a{
+    text-decoration: none;
+    color:#262626;
+}
+
+/* 로그인 박스 */
+.login_wrapper{
+    position:absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width:350px;
+    height:600px;
+    top:40%;
+    left:30%;
+    margin: -175px 0px 0px -190px;
+    background-color:white;
+    border: 1px solid #DBDBDB;
+}
+
+.login_logo{
+    margin :30px 0 30px 0;
+    color:#262626;
+    font-family: 'Lobster', cursive;
+    font-size: 40px;
+    font-weight: 100px;
+}
+
+/* 로그인폼 인풋 */
+.login_form{
+    display:flex;
+    flex-direction: column;
+    width:280px;
+    margin-top:10px;
+}
+
+.login_text{
+    width:100%;
+    height:40px;
+    margin: 3px 0 3px 0 ;
+    padding: 0 10px 0 10px;
+    background-color:#FAFAFA;
+    border: 1px solid #DBDBDB;
+    border-radius: 3px;
+}
+/* 배경이미지 */
+img{
+    width: 550px;
+    height: 550px;
+    padding-top: 15%;
+}
+
+/* sns로그인 이미지  */
+form>img{
+    width: 35px;
+    height: 35px;
+}
+
+.login_text:focus{
+    outline: 1px solid #a8a8a8;
+}
+
+.login_text::placeholder{
+    color:#8E8E8E;
+}
+
+.login_text::value{
+    color:#262626;
+}
+
+.login_btn{
+    width:100%;
+    height:33px;
+    margin: 10px 0 5px 0;
+    color:957745;
+    background-color: #FFF97B;
+    border-radius: 5px;
+    border-style: none;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 비밀번호를 잊으셨나요? */
+.login_bottom{
+    margin-top: 65px;
+    color:#01376A;
+    font-size: 13px;
+}

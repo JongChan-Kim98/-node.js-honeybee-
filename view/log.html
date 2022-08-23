@@ -1,0 +1,36 @@
+<html><!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>꿀단지 로그인창</title>
+    <link rel="stylesheet" type="text/css" href="../css/log.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+</head>
+<body>
+    <img src="/img/bee_bg.png" style="float:right; padding-right: 20%;" />
+
+    <article>
+        <div class = "login_wrapper">
+            <div class="login_logo">꿀단지</div>
+            <form class="login_form">
+                <input id="LOGIN_ID" class = "login_text" type="text" name="userId" placeholder="전화번호, 사용자 이름 또는 이메일">
+                <input  id="LOGIN_PW" class = "login_text" type="password" name="userPassword" placeholder="비밀번호">
+                <button id="LOGIN_BTN" class = "login_btn" type="button" disabled>로그인</button>
+            </form>
+            <!-- <p>페북이랑 카톡이랑 네이버 들어가야댐</p> -->
+            <form>
+                <img src="/img/facebook.png"/>
+                <img src="/img/kakao.png"/>
+                <img src="/img/line.png"/>
+            </form>
+            <a class = "login_bottom" href="/view/agreement.html" >신규 사용자이신가요?</a>
+            <a class = "login_bottom" href="/view/loghtml/아이디찾기.html" >비밀번호를 잊으셨나요?</a>
+
+        </div>
+    </article>
+</body>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="../js/log.js"></script>
+</html>
