@@ -5,11 +5,12 @@ const Sql = require('sequelize');
 const config = require('../config/config');
 const User = require('./users');
 
+
 // 시퀄라이즈 객체 생성 옵션을 적용한 객체 만들어 놓는다. 
 const sequelize = new Sql(
     config.dev.database,
     config.dev.username,
-    config.dev.passwort,
+    config.dev.password,
     config.dev
 );
 

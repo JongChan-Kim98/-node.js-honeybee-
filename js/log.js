@@ -17,12 +17,13 @@ function color() {
     }
 }
 
-function moveToMain(){
-    //로그인시 메인 홈페이지로 이동
-    alert("로그인성공");
-    location.replace("../main.html");
-}
+// function moveToMain(){
+//     //로그인시 메인 홈페이지로 이동
+//     alert("로그인성공");
+//    // location.replace("../main.html");
+// }
 
 loginId.addEventListener('keyup', color);
 loginPw.addEventListener('keyup', color);
-loginBtn.addEventListener('click',moveToMain);
+//loginBtn.addEventListener('click',moveToMain);
+

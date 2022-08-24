@@ -1,41 +1,28 @@
-// 모듈 사용할것
-// express , ejs , path : path 기본 경로를 다룰 수 있게 도와주는 모듈 이다.
 const express = require("express");
+const bodyParser = require('body-parser');
 const ejs = require("ejs");
 const path = require("path");
 const mysql = require("mysql2");
 // 이렇게 폴더 경로까지만 잡으면 index 탐색 찾은 index파일을 기본으로 가져옴\
-const { sequelize, User} = require("./model")
-// 서버 객체 만들고
-const app = express();
-// path.join함수는매개변수를 받은 문자열들을 주소처럼 합쳐줌
-// path.join("a","b") = a/b 주소처럼 만들어줌
+const { sequelize, User} = require("./model"); // 서버 객체 만들고
+const { query } = require("express");
+const app = express(); // express 설정1
 // app.js가 있는 위치 __dirname views 폴더까지의 경로가 기본값 렌더링할 파일을 모아둔 폴더
 // app.set express에 값을 저장가능 밑에 구문은 views키에 주소값 넣은부분
-app.set('views' , path.join(__dirname,"view"))
-// 랜더링하는 기본 엔진을 ejs 처럼 사용한다고 알려주는것.
-// engine("파일타입",ejs 그릴때 방식을)뷰 엔진이 그릴때
-// app.get("/",(req,res)=>{
-//     // fs 모듈로 파일을 가져왔다 치고
-//     res.send(ejs.render(data,{e}))
-// });
-// html의 뷰 엔진을 ejs 랜더링 방식으로 바꾼다.
-app.engine("html",ejs.renderFile)
+app.set('views' , path.join(__dirname,"view")); // path.join함수는매개변수를 받은 문자열들을 주소처럼 합쳐줌 path.join("a","b") = a/b 주소처럼 만들어줌
+app.engine("html",ejs.renderFile); // engine("파일타입",ejs 그릴때 방식)
+app.set("view engine", "html"); // 뷰 엔진 설정을 html을 랜더링 할때 사용 하겠다.
+app.use(express.urlencoded({extended:false})); // body 객체 사용
+app.use(express.static(__dirname)); // css경로
+// app.use(userRouter); // 라우터
 
-// 뷰 엔진 설정을 html을 랜더링 할때 사용 하겠다.
-app.set("view engine", "html")
+app.use(express.static(path.join(__dirname,'/public'))); // 정적 파일 설정 (미들웨어) 3
+app.use(bodyParser.urlencoded({extended:false})); // 정제 (미들웨어) 5
 
-// body 객체 사용
-app.use(express.urlencoded({extended:false})) 
-
-// 시퀄라이즈 구성 해보자 연결 및 테이블 생성 여기가 처음 매핑
-// sync 함수는 데이터 베이스 동기화 하는데 사용 필요한 테이블을 생성해준다.
-// 필요한 테이블들이 다 생기고 매핑된다. 절대 어긋날 일이 없다.
-// 테이블 내용이 다르면 오류를 밷어냄
-// 여기서 CREATE TABLE 문이 여기서 실행된다는것
-// force 강제로 초기화를 시킬것인지. (테이블 내용을 다 비워줄것인지)
+// 시퀄라이즈 구성 해보자 연결 및 테이블 생성 여기가 처음 매핑// sync 함수는 데이터 베이스 동기화 하는데 사용 필요한 테이블을 생성해준다.
+// 필요한 테이블들이 다 생기고 매핑된다. 절대 어긋날 일이 없다.// 테이블 내용이 다르면 오류를 밷어냄 // 여기서 CREATE TABLE 문이 여기서 실행된다는것
 sequelize
-.sync({force : false})
+.sync({force : false}) // force 강제로 초기화를 시킬것인지. (테이블 내용을 다 비워줄것인지)
 .then(()=>{
     // 연결 성공
     console.log("DB연결 성공")
@@ -44,20 +31,6 @@ sequelize
     // 연결실패
     console.log(err)
 });
-
-
-app.get("/", (req,res)=>{
-    res.render("log", { data : 1});
-});
-
-app.get("/agreement", (req,res)=>{
-    res.render("agreement", { data : 1});
-});
-
-app.get("/signUp", (req,res)=>{
-    res.render("signUp", { data : 1});
-});
-
 
 app.post("/create",(req,res)=>{
     // create이 함수를 사용하면 해당 테이블에 컬럼을 추가할 수 있다.
@@ -75,7 +48,7 @@ app.post("/create",(req,res)=>{
         userEmail : userEmail
         // 위의 객체를 전달해서 컬럼을 추가할수있다.
     })
-    .then((result)=>{ // 회원가입 실패 시 
+    .then((result)=>{ // 회원가입 성공 시 
         res.send(result);
     })
     .catch((err)=>{ // 회원 가입 실패 시 
@@ -83,8 +56,95 @@ app.post("/create",(req,res)=>{
     });
 });
 
-// css경로
-app.use(express.static(__dirname));
+app.get("/", (req,res)=>{  // 현재까지 메인인 log.html
+    res.render("log");
+});
+
+app.get("/agreement", (req,res)=>{ // 약관내용 페이지
+    res.render("agreement");
+});
+
+app.get("/signUp", (req,res)=>{ // 회원가입페이지 
+    res.render("signUp");
+});
+
+
+
+/////////로그인 
+// app.post('/log',(req,res)=>{
+//     const body = req.body;
+//     const id = body.userId;
+//     const pw = body.userPassword;
+
+//     query('SELECT * FROM users WHERE userId=?',[id],(err,data)=>{
+//         // 로그인 확인 
+//         if(id == data[0].userId || pw == data[0].userPassword){
+//             console.log('로그인 성공');
+//         } else{
+//             console.log('로그인실패');
+//             res.render('log');
+//         }
+//         console.log(id);
+//     });
+// });
+
+//////////////////로그인젭라
+// app.post("/log", (req,res)=>{
+//     const { userid, userpassword, nickname} = req.body;
+//     User.findOne({
+//         where : 
+//         {
+//             userId : userid,
+//             userPassword : userpassword,
+//             nickName : nickname,
+//         },
+//     }),
+//     function(err, result){
+//         if(result.userId == )
+//     }
+//     .then(()=>{
+//         res.render("success",{ data : nickname })
+//     })
+//     .catch(()=>{
+//         // 실패하면 에러 페이지를 보여주면 된다.
+//         console.log("err");
+//     })
+// });
+
+/////////////////////////////
+// app.post('/login',function(req,res){
+//     db.collection('post').findOne({id:req.body.id},function(error,result){
+//       console.log(result.id)
+//       if(result.id == req.body.id ){res.send('중복된 아이디입니다.')}
+//       else{db.collection('post').insertOne({id:req.body.id, pw:req.body.pw} , function(error,result){
+//         console.log(result)
+//         res.redirect('/');
+//       })}
+//     })
+//   })
+
+
+///////////// 로그인
+// app.post('/', function(request, response) {
+//     var userId = request.body.userId;
+//     var userPassword = request.body.userPassword;
+//     if (userId && userPassword) {
+//         connection.query('SELECT * FROM users WHERE userId = ? AND userPassword = ?', [userId, userPassword], function(error, results, fields) {
+//             if (error) throw error;
+//             if (results.length > 0) {
+//                 request.session.loggedin = true;
+//                 request.session.userId = userId;
+//                 response.redirect('/');
+//                 response.end();
+//             } else {              
+//                 response.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); document.location.href="/log";</script>');    
+//             }            
+//         });
+//     } else {        
+//         response.send('<script type="text/javascript">alert("userId과 userPassword를 입력하세요!"); document.location.href="/log";</script>');    
+//         response.end();
+//     }
+// });
 
 // app.get("/user",(req,res)=>{
 //     // 여기서는 추가된 유저들을 봐야하니까
@@ -173,6 +233,6 @@ app.use(express.static(__dirname));
 // })
 
 // 서버 연결
-app.listen(4242,()=>{
+app.listen(3000,()=>{
     console.log("서버가 열렸습니다.");
 });
