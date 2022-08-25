@@ -4,7 +4,7 @@ const ejs = require("ejs");
 const path = require("path");
 const mysql = require("mysql2");
 // 이렇게 폴더 경로까지만 잡으면 index 탐색 찾은 index파일을 기본으로 가져옴\
-const { sequelize, User} = require("./model"); // 서버 객체 만들고
+const { sequelize, User, MyPage} = require("./model"); // 서버 객체 만들고
 const app = express(); // express 설정1
 // app.js가 있는 위치 __dirname views 폴더까지의 경로가 기본값 렌더링할 파일을 모아둔 폴더
 // app.set express에 값을 저장가능 밑에 구문은 views키에 주소값 넣은부분
@@ -14,6 +14,7 @@ app.set("view engine", "html"); // 뷰 엔진 설정을 html을 랜더링 할때
 app.use(express.urlencoded({extended:false})); // body 객체 사용
 app.use(express.static(__dirname)); // css경로
 // app.use(userRouter); // 라우터
+
 app.use(express.static(path.join(__dirname,'/public'))); // 정적 파일 설정 (미들웨어) 3
 app.use(bodyParser.urlencoded({extended:false})); // 정제 (미들웨어) 5
 
@@ -76,14 +77,37 @@ app.post('/log',(req,res)=>{
         where : {userId:userid,userPassword:userpw}
     }).then((e)=>{ // findOne을해서 담은 정보를 e에 넣음
         if(e === null){
-            res.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); document.location.href="/log";</script>');
+            res.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); window.location.href="/";</script>');
         }else{
             res.send('<script type="text/javascript">alert("환영합니다!"); document.location.href="/myPage";</script>');        
         }
     });
 });
-//-------------------------------로그인------------------------------------------
-
+//-------------------------------프로파일픽쳐저장------------------------------------------
+app.post("/myPage",(req,res)=>{
+    const {  nickName, profilePicture }  = req.body;
+    const create = User.create({  
+        nickName : nickName,
+        img : profilePicture
+    }).then((e)=>{
+        res.send(e);
+    }).catch((err)=>{ // 회원 가입 실패 시 
+        res.send(err);
+    });
+});
+//-------------------------------myPage에 저장된 닉네임값 넘기기-------------------
+app.post("/myPage",(req,res)=>{
+    const {profilePicture, nickName} = req.body;
+    User.findOne({
+        where : {nickName : nickName},
+    }).then((e)=>{
+        MyPage.create({
+            profilePicture : inputImage,
+            nickName : e.nickName
+        })
+    })
+})
+//-------------------------------myPage에 저장된 닉네임값 넘기기-------------------
 // app.get('/view/:name',(req,res)=>{
 //     // 해당 유저를 이름을 조회하고
 //     User.findOne({

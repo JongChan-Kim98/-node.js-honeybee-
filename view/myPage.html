@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../css/header.css"/>
     <link rel="stylesheet" href="../css/myPage.css"/>
     <link rel="stylesheet" href="../css/footer.css"/>
+    <!-- jquery -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <title>프로필 수정</title>
 </head>
 <body>
@@ -82,6 +84,7 @@
         </br>
         </br>
         </br>
+        <form action="/myPage" method="post">
             <table border="1" width="1000">
                 <tbody>
                     <tr height="200">
@@ -97,7 +100,7 @@
                                     <!--  -->
                                     <img id="preview-image" src="https://static.nid.naver.com/images/web/user/default.png?type=s160" width="100" height="100">
                                     <input style="display: block;" type="file" id="input-image"></br></br>
-                                    <input type="file" accept="image/*" id="input-image">
+                                    <input type="file" accept="image/*" id="input-image" name="inputImage">
                                     <div class="file-edit-icon">
                                         <label for="input-image">사진변경</label>
                                         <label class="preview-de">삭제</label> 
@@ -109,7 +112,7 @@
                     </tr>
                     <tr height="80">
                         <td bgcolor="#f9f9f9">별명</td>
-                        <td><input id="" value="귀요미한결"></td>
+                        <td><input id="" value="" name="nickName"></td>
                     </tr>
                 </tbody>
             </table>
@@ -123,6 +126,7 @@
                     <button>취 소</button>
                 </a>
             </div>
+        </form>
         </div>
     
     <!--footer-->
