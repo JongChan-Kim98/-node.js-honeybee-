@@ -81,8 +81,8 @@ class User extends Sql.Model{
                 paranoid : false,
                 // charset, collate : 각각 밑에 처럼 설정해주면 한글이 입력 가능하게 되고.
                 // 이모티콘같은것도 쓸려면 utf-8 뒤에 mb4붙이면댐
-                charset: "utf8",
-                collate: "utf8_general_ci"
+                charset: "utf8mb4",
+                collate: "utf8mb4_general_ci"
             }
         );
     }

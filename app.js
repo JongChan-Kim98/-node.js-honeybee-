@@ -5,7 +5,6 @@ const path = require("path");
 const mysql = require("mysql2");
 // 이렇게 폴더 경로까지만 잡으면 index 탐색 찾은 index파일을 기본으로 가져옴\
 const { sequelize, User} = require("./model"); // 서버 객체 만들고
-const { query } = require("express");
 const app = express(); // express 설정1
 // app.js가 있는 위치 __dirname views 폴더까지의 경로가 기본값 렌더링할 파일을 모아둔 폴더
 // app.set express에 값을 저장가능 밑에 구문은 views키에 주소값 넣은부분
@@ -15,7 +14,6 @@ app.set("view engine", "html"); // 뷰 엔진 설정을 html을 랜더링 할때
 app.use(express.urlencoded({extended:false})); // body 객체 사용
 app.use(express.static(__dirname)); // css경로
 // app.use(userRouter); // 라우터
-
 app.use(express.static(path.join(__dirname,'/public'))); // 정적 파일 설정 (미들웨어) 3
 app.use(bodyParser.urlencoded({extended:false})); // 정제 (미들웨어) 5
 
@@ -47,9 +45,8 @@ app.post("/create",(req,res)=>{
         userId : userId,
         userEmail : userEmail
         // 위의 객체를 전달해서 컬럼을 추가할수있다.
-    })
-    .then((result)=>{ // 회원가입 성공 시 
-        res.send(result);
+    }).then((e)=>{ // 회원가입 성공 시
+        res.send('<script>alert("회원가입을 축하합니다!"); document.location.href="/myPage";</script>');
     })
     .catch((err)=>{ // 회원 가입 실패 시 
         res.send(err);
@@ -68,118 +65,24 @@ app.get("/signUp", (req,res)=>{ // 회원가입페이지
     res.render("signUp");
 });
 
-
-
-/////////로그인 
-// app.post('/log',(req,res)=>{
-//     const body = req.body;
-//     const id = body.userId;
-//     const pw = body.userPassword;
-
-//     query('SELECT * FROM users WHERE userId=?',[id],(err,data)=>{
-//         // 로그인 확인 
-//         if(id == data[0].userId || pw == data[0].userPassword){
-//             console.log('로그인 성공');
-//         } else{
-//             console.log('로그인실패');
-//             res.render('log');
-//         }
-//         console.log(id);
-//     });
-// });
-
-//////////////////로그인젭라
-// app.post("/log", (req,res)=>{
-//     const { userid, userpassword, nickname} = req.body;
-//     User.findOne({
-//         where : 
-//         {
-//             userId : userid,
-//             userPassword : userpassword,
-//             nickName : nickname,
-//         },
-//     }),
-//     function(err, result){
-//         if(result.userId == )
-//     }
-//     .then(()=>{
-//         res.render("success",{ data : nickname })
-//     })
-//     .catch(()=>{
-//         // 실패하면 에러 페이지를 보여주면 된다.
-//         console.log("err");
-//     })
-// });
-
-/////////////////////////////
-// app.post('/login',function(req,res){
-//     db.collection('post').findOne({id:req.body.id},function(error,result){
-//       console.log(result.id)
-//       if(result.id == req.body.id ){res.send('중복된 아이디입니다.')}
-//       else{db.collection('post').insertOne({id:req.body.id, pw:req.body.pw} , function(error,result){
-//         console.log(result)
-//         res.redirect('/');
-//       })}
-//     })
-//   })
-
-
-///////////// 로그인
-// app.post('/', function(request, response) {
-//     var userId = request.body.userId;
-//     var userPassword = request.body.userPassword;
-//     if (userId && userPassword) {
-//         connection.query('SELECT * FROM users WHERE userId = ? AND userPassword = ?', [userId, userPassword], function(error, results, fields) {
-//             if (error) throw error;
-//             if (results.length > 0) {
-//                 request.session.loggedin = true;
-//                 request.session.userId = userId;
-//                 response.redirect('/');
-//                 response.end();
-//             } else {              
-//                 response.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); document.location.href="/log";</script>');    
-//             }            
-//         });
-//     } else {        
-//         response.send('<script type="text/javascript">alert("userId과 userPassword를 입력하세요!"); document.location.href="/log";</script>');    
-//         response.end();
-//     }
-// });
-
-// app.get("/user",(req,res)=>{
-//     // 여기서는 추가된 유저들을 봐야하니까
-//     // 조회를 하는데 전체를 조회해야한다.
-//     // findAll 전체를 찾는다.
-//     // findAll은 매개변수로 검색할 옵션
-//     User.findAll({}).then((e)=>{
-//         res.render("page",{data : e})
-//     })
-//     .catch(()=>{
-//         // 실패하면 에러 페이지를 보여주면 된다.
-//         res.render("err")
-//     })
-// })
-
-// app.post("/create_post",(req,res)=>{
-//     const { name,text } = req.body;
-//     // console.log(name , text)
-//     // User테이블이랑 Post랑 연결되어 있는데
-//     // User id 기본키로 되어있고 Post는 user_id
-//     // 테이블에서 하나의 컬럼값 가져온다.
-//     // findOne 하나를 검색할때 사용
-//     User.findOne({
-//         where : {name : name},
-//     })
-//     .then((e)=>{
-//         Post.create({
-//             // foreignKey user_id 이고 유저의 아이디와 연결한다고 정의를 해놓기 때문에
-//             // 말해 놓았다 모델에 user.js와 posts.js
-//             msg : text,
-//             user_id : e.id,
-//         });
-//     })
-// })
-
+app.get("/myPage", (req,res)=>{
+    res.render("myPage");
+});
+//------------------------------로그인--------------------------------------------
+app.post('/log',(req,res)=>{    
+    const userid = req.body.userId;
+    const userpw = req.body.userPassword;
+    User.findOne({
+        where : {userId:userid,userPassword:userpw}
+    }).then((e)=>{ // findOne을해서 담은 정보를 e에 넣음
+        if(e === null){
+            res.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); document.location.href="/log";</script>');
+        }else{
+            res.send('<script type="text/javascript">alert("환영합니다!"); document.location.href="/myPage";</script>');        
+        }
+    });
+});
+//-------------------------------로그인------------------------------------------
 
 // app.get('/view/:name',(req,res)=>{
 //     // 해당 유저를 이름을 조회하고
