@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../css/myPage.css"/>
     <link rel="stylesheet" href="../css/footer.css"/>
     <!-- jquery -->
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
     <title>프로필 수정</title>
 </head>
 <body>
@@ -98,9 +98,9 @@
                                 <div class="image-container">
                                   <span class="filebox">
                                     <!--  -->
-                                    <img id="preview-image" src="https://static.nid.naver.com/images/web/user/default.png?type=s160" width="100" height="100">
-                                    <input style="display: block;" type="file" id="input-image"></br></br>
-                                    <input type="file" accept="image/*" id="input-image" name="inputImage">
+                                    <img id="preview-image" src="https://static.nid.naver.com/images/web/user/default.png?type=s160" width="100" height="100" >
+                                    <input style="display: block;" type="file" id="input-image" ></br></br>
+                                    <input type="file" accept="image/*" id="input-image" name="profilePicture">
                                     <div class="file-edit-icon">
                                         <label for="input-image">사진변경</label>
                                         <label class="preview-de">삭제</label> 
@@ -112,14 +112,16 @@
                     </tr>
                     <tr height="80">
                         <td bgcolor="#f9f9f9">별명</td>
-                        <td><input id="" value="" name="nickName"></td>
+                        
+                        <td><input id="nickname" value="<%= data %>" name="nickname"></td>
+                        
                     </tr>
                 </tbody>
             </table>
 
             <div class="btn_wrap">
                 <a href>
-                    <button type="submit">적 용</button>
+                    <button id="upload" type="button">적 용</button>
                 </a>
 
                 <a href>
@@ -203,6 +205,32 @@
             count = false;
         }
     })
+
+
+
+    upload.onclick = function(e){
+        e.preventDefault();
+        imgUpload();
+    };
+    function imgUpload(){
+        let formdata = new FormData();
+        var file = document.querySelector('#input-image').files[0];  
+        formdata.append('file', file);	
+        formdata.append('nickname', nickname.value);	
+        console.log(nickname.value)
+        $.ajax({
+            url : '/myPage',
+            type : 'post',
+            processData: false,
+            contentType: false,
+            data : formdata,
+            success : function(data){
+                alert(data.msg);
+                location.href = data.url;
+            }
+        })
+    }
+    
 </script>
 </html>
 

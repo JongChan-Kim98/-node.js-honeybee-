@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const ejs = require("ejs");
 const path = require("path");
 const mysql = require("mysql2");
+const img = require('./js/upload');
 // 이렇게 폴더 경로까지만 잡으면 index 탐색 찾은 index파일을 기본으로 가져옴\
 const { sequelize, User, MyPage} = require("./model"); // 서버 객체 만들고
 const app = express(); // express 설정1
@@ -47,7 +48,7 @@ app.post("/create",(req,res)=>{
         userEmail : userEmail
         // 위의 객체를 전달해서 컬럼을 추가할수있다.
     }).then((e)=>{ // 회원가입 성공 시
-        res.send('<script>alert("회원가입을 축하합니다!"); document.location.href="/myPage";</script>');
+        res.send('<script>alert("회원가입을 축하합니다!"); document.location.href="/";</script>');
     })
     .catch((err)=>{ // 회원 가입 실패 시 
         res.send(err);
@@ -66,7 +67,7 @@ app.get("/signUp", (req,res)=>{ // 회원가입페이지
     res.render("signUp");
 });
 
-app.get("/myPage", (req,res)=>{
+app.get("/myPage", (req,res)=>{ // 마이페이지
     res.render("myPage");
 });
 //------------------------------로그인--------------------------------------------
@@ -74,40 +75,55 @@ app.post('/log',(req,res)=>{
     const userid = req.body.userId;
     const userpw = req.body.userPassword;
     User.findOne({
-        where : {userId:userid,userPassword:userpw}
+        raw : true,
+        where : {userId:userid,userPassword:userpw},
+      //  raw : true
     }).then((e)=>{ // findOne을해서 담은 정보를 e에 넣음
         if(e === null){
             res.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); window.location.href="/";</script>');
+            
         }else{
-            res.send('<script type="text/javascript">alert("환영합니다!"); document.location.href="/myPage";</script>');        
+            res.render('myPage',{data : e.nickName});        
+            // console.log(e.profilePicture);
         }
+        // const 
+        // User.findOne({
+        //     where : {nickName : nickName}
+        // }).then((a)=>{
+        //     console.log(a);
+        // })
     });
 });
 //-------------------------------프로파일픽쳐저장------------------------------------------
-app.post("/myPage",(req,res)=>{
-    const {  nickName, profilePicture }  = req.body;
-    const create = User.create({  
-        nickName : nickName,
-        img : profilePicture
-    }).then((e)=>{
-        res.send(e);
-    }).catch((err)=>{ // 회원 가입 실패 시 
-        res.send(err);
+app.post("/myPage",img.upload.single('file'),(req,res)=>{
+    console.log(req.body.nickname)
+    const nickname = req.body.nickname;
+    User.update({  
+        nickName : nickname, 
+        profilePicture : "/uploadimg/" + req.file.originalname.replace('.PNG',"") + new Date().getTime() + ".PNG"
+    },
+    {
+        where: {nickName : nickname}
+    }
+    ).then(()=>{
+        res.send({msg : "적용되었습니다.", url : '/myPage'});
+    }).catch((err)=>{  
+        console.log(err);
     });
 });
 //-------------------------------myPage에 저장된 닉네임값 넘기기-------------------
-app.post("/myPage",(req,res)=>{
-    const {profilePicture, nickName} = req.body;
-    User.findOne({
-        where : {nickName : nickName},
-    }).then((e)=>{
-        MyPage.create({
-            profilePicture : inputImage,
-            nickName : e.nickName
-        })
-    })
-})
-//-------------------------------myPage에 저장된 닉네임값 넘기기-------------------
+// app.post("/myPage",(req,res)=>{
+//     const {profilePicture, nickName} = req.body;
+//     User.findOne({
+//         where : {nickName : nickName},
+//     }).then((e)=>{
+//         MyPage.create({
+//             profilePicture : inputImage,
+//             nickName : e.nickName
+//         })
+//     })
+// })
+//-----------------------------------------------------------------------------
 // app.get('/view/:name',(req,res)=>{
 //     // 해당 유저를 이름을 조회하고
 //     User.findOne({
