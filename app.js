@@ -15,7 +15,7 @@ app.set("view engine", "html"); // 뷰 엔진 설정을 html을 랜더링 할때
 app.use(express.urlencoded({extended:false})); // body 객체 사용
 app.use(express.static(__dirname)); // css경로
 // app.use(userRouter); // 라우터
-
+// 
 app.use(express.static(path.join(__dirname,'/public'))); // 정적 파일 설정 (미들웨어) 3
 app.use(bodyParser.urlencoded({extended:false})); // 정제 (미들웨어) 5
 
