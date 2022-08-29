@@ -15,8 +15,9 @@ app.set("view engine", "html"); // 뷰 엔진 설정을 html을 랜더링 할때
 app.use(express.urlencoded({extended:false})); // body 객체 사용
 app.use(express.static(__dirname)); // css경로
 // app.use(userRouter); // 라우터
-// 
+
 app.use(express.static(path.join(__dirname,'/public'))); // 정적 파일 설정 (미들웨어) 3
+app.use('/uploadimg',express.static(__dirname + '/uploadImg'));
 app.use(bodyParser.urlencoded({extended:false})); // 정제 (미들웨어) 5
 
 // 시퀄라이즈 구성 해보자 연결 및 테이블 생성 여기가 처음 매핑// sync 함수는 데이터 베이스 동기화 하는데 사용 필요한 테이블을 생성해준다.
@@ -83,7 +84,7 @@ app.post('/log',(req,res)=>{
             res.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); window.location.href="/";</script>');
             
         }else{
-            res.render('myPage',{data : e.nickName});        
+            res.render('myPage',{data : e});        
             // console.log(e.profilePicture);
         }
         // const 
@@ -98,16 +99,19 @@ app.post('/log',(req,res)=>{
 app.post("/myPage",img.upload.single('file'),(req,res)=>{
     console.log(req.body.nickname)
     const nickname = req.body.nickname;
+    const profilePicture = req.body.profilePicture;
     User.update({  
-        nickName : nickname, 
-        profilePicture : "/uploadimg/" + req.file.originalname.replace('.PNG',"") + new Date().getTime() + ".PNG"
+        nickName : req.body.chageNickname, 
+        profilePicture : "uploadimg/" + req.file.originalname.replace('.PNG',"")
     },
     {
-        where: {nickName : nickname}
+        where: {
+            nickName : nickname,
+            // profilePicture : profilePicture
+        }
     }
-    ).then(()=>{
-        res.render('myPage',{data : nickname}); 
-        //res.send({msg : "적용되었습니다.", url : '/myPage'});
+    ).then((e)=>{
+        res.render('myPage',{data : {nickName:e.nickName, profilePicture:e.profilePicture}});  // , profile : e.profilePicture
     }).catch((err)=>{  
         console.log(err);
     });
@@ -124,7 +128,6 @@ app.post("/myPage",img.upload.single('file'),(req,res)=>{
 //         })
 //     })
 // })
-//
 //-----------------------------------------------------------------------------
 // app.get('/view/:name',(req,res)=>{
 //     // 해당 유저를 이름을 조회하고

@@ -68,7 +68,8 @@ class User extends Sql.Model{
                 profilePicture : {
                     type : Sql.STRING,
                     allowNull:true,
-                    BLOB : true
+                    BLOB : true,
+                    defaultValue : 'https://static.nid.naver.com/images/web/user/default.png?type=s160',
                 }
 
 
