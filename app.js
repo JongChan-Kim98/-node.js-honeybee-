@@ -106,7 +106,8 @@ app.post("/myPage",img.upload.single('file'),(req,res)=>{
         where: {nickName : nickname}
     }
     ).then(()=>{
-        res.send({msg : "적용되었습니다.", url : '/myPage'});
+        res.render('myPage',{data : nickname}); 
+        //res.send({msg : "적용되었습니다.", url : '/myPage'});
     }).catch((err)=>{  
         console.log(err);
     });
