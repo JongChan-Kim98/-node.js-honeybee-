@@ -78,21 +78,12 @@ app.post('/log',(req,res)=>{
     User.findOne({
         raw : true,
         where : {userId:userid,userPassword:userpw},
-      //  raw : true
     }).then((e)=>{ // findOne을해서 담은 정보를 e에 넣음
         if(e === null){
             res.send('<script type="text/javascript">alert("로그인 정보가 일치하지 않습니다."); window.location.href="/";</script>');
-            
         }else{
             res.render('myPage',{data : e});        
-            // console.log(e.profilePicture);
         }
-        // const 
-        // User.findOne({
-        //     where : {nickName : nickName}
-        // }).then((a)=>{
-        //     console.log(a);
-        // })
     });
 });
 //-------------------------------프로파일픽쳐저장------------------------------------------
@@ -107,11 +98,10 @@ app.post("/myPage",img.upload.single('file'),(req,res)=>{
     {
         where: {
             nickName : nickname,
-            // profilePicture : profilePicture
         }
     }
     ).then((e)=>{
-        res.render('myPage',{data : {nickName:e.nickName, profilePicture:e.profilePicture}});  // , profile : e.profilePicture
+        res.render('myPage',{data : {nickName:e.nickName, profilePicture:e.profilePicture}});  
     }).catch((err)=>{  
         console.log(err);
     });
