@@ -75,7 +75,7 @@
     </br>
         <!-- idcontent -->
         <div id = "idcontent">
-            <div>
+            <div id = "textbox">
                 <h1>프로필 수정</h1>
             </br>
             </br>
@@ -226,6 +226,7 @@
             contentType: false,
             data : formdata,
             success : function(data){
+                alert('적용되었습니다');
                 location.reload();
             }
         })

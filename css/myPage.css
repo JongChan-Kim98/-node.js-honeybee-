@@ -35,6 +35,9 @@
     padding: 140px 500px 95px;
   }
 
+  #textbox{
+    width : max-content;
+  }
   /* .tdcell{
     padding: 32px 31px 32px;
   } */
@@ -61,6 +64,8 @@
   .btn_wrap{
     text-align: center;
     margin-top: 30px;
+    position: absolute;
+    /* width: max-content; */
   }
 
   .filebox label {
