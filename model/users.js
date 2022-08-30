@@ -70,9 +70,19 @@ class User extends Sql.Model{
                     allowNull:true,
                     BLOB : true,
                     defaultValue : 'https://static.nid.naver.com/images/web/user/default.png?type=s160',
+                },
+                userStop : {
+                    type : Sql.STRING(20),
+                    allowNull : false,
+                },
+                userWarning : {
+                    type : Sql.STRING(20),
+                    allowNull : false,
+                },
+                authority : {
+                    type : Sql.STRING(20),
+                    allowNull : false,
                 }
-
-
             },
 
             {

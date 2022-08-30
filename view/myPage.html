@@ -127,6 +127,9 @@
                 <a href>
                     <button>취 소</button>
                 </a>
+                <a href>
+                    <button id="logout" type="button">로 그 아 웃</button>
+                </a>
             </div>
         </form>
         </div>
@@ -207,8 +210,6 @@
         }
     })
 
-
-
     upload.onclick = function(e){
         e.preventDefault();
         imgUpload();
@@ -231,7 +232,44 @@
             }
         })
     }
-    
+    // 적용 버튼 이미지 업로드 
+    upload.onclick = function(e){
+        e.preventDefault();
+        imgUpload();
+    };
+    function imgUpload(){
+        let formdata = new FormData();
+        var file = document.querySelector('#input-image').files[0];  
+        formdata.append('file', file);	
+        formdata.append('nickname', nick);
+        formdata.append('chageNickname', nickname.value);
+        $.ajax({
+            url : '/myPage',
+            type : 'post',
+            processData: false,
+            contentType: false,
+            data : formdata,
+            success : function(data){
+                alert('적용되었습니다');
+                location.reload();
+            }
+        })
+    }
+    // 로그아웃 버튼 쿠키 로그아웃 
+    logout.onclick = function(e){
+        e.preventDefault();
+        userLogout();
+    };
+    function userLogout(){
+        $.ajax({
+            url : '/logout',
+            type : 'get',
+            success : function(){
+                alert('로그아웃 되었습니다');
+                location.href="/";
+            }
+        })
+    }
 </script>
 </html>
 
